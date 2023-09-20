@@ -5,7 +5,8 @@ $config = new Config();
 
 $config->dbConnect();
 
-$res = $config->usersList();
+// $res = $config->usersList();
+$res = null;
 
 $submit = @$_REQUEST['create_user'];
 
@@ -37,6 +38,12 @@ if (isset($submit)) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
     <div class="container pt-5">
+        <?php if($res==false){ ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Fail !!</strong> Record does not inserted !!!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php } ?>
         <form method="post" action="">
             <div class="mb-3">
                 <label for="uname" class="form-label">Name</label>
