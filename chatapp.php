@@ -6,7 +6,7 @@ $config = new Config();
 $config->dbConnect();
 
 // $res = $config->usersList();
-$res = null;
+$res = "";
 
 $submit = @$_REQUEST['create_user'];
 
@@ -18,11 +18,9 @@ if (isset($submit)) {
     $about = $_POST['about'];
 
     $res = $config->insertUser($uname,$email,$pass,$contact,$about);
-    if($res){
+    if($res=='success'){
         header('Location: userslist.php');
-    } else {
-        echo "Error in user creation...";
-    }
+    } 
 }
 ?>
 
@@ -38,7 +36,7 @@ if (isset($submit)) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
     <div class="container pt-5">
-        <?php if($res==false){ ?>
+        <?php if($res=='fail') { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Fail !!</strong> Record does not inserted !!!
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

@@ -26,7 +26,12 @@ class Config {
     public function insertUser($name,$email,$upass,$contact,$about){
         $query = "INSERT INTO $this->table_name ($this->col_name,$this->col_email,$this->col_pass,$this->col_contact,$this->col_about) VALUES('$name','$email','$upass','$contact','$about')";
 
-        return mysqli_query($this->conn, $query);
+        $res = mysqli_query($this->conn, $query);
+        if($res){
+            return "success";
+        } else {
+            return "fail";
+        }
     }
 
     public function usersList(){
