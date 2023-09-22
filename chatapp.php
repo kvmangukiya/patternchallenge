@@ -2,14 +2,16 @@
 include("config/config.php");
 
 $config = new Config();
-
 $config->dbConnect();
 
-// $res = $config->usersList();
 $res = "";
+$uname = "";
+$email = "";
+$pass = "";
+$contact = "";
+$about = "";
 
 $submit = @$_REQUEST['create_user'];
-
 if (isset($submit)) {
     $uname = $_POST['uname'];
     $email = $_POST['uemail'];
@@ -18,10 +20,50 @@ if (isset($submit)) {
     $about = $_POST['about'];
 
     $res = $config->insertUser($uname,$email,$pass,$contact,$about);
-    if($res=='success'){
-        header('Location: userslist.php');
+    if($res!='success'){
+        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success !!</strong> User successfully created !!!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+    } else {
+        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Fail !!</strong> Record does not inserted !!!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+    }
+}
+$editUser = @$_REQUEST['edit_user'];
+if (isset($editUser)) {
+    $edit_id = $_POST['edit_id'];
+
+    $rse = $config->getSingleRecord($edit_id);
+    if($rs=mysqli_fetch_assoc($rse)){
+        $uname = $rs['uname'];
+        $email = $rs['uemail'];
+        $pass = $rs['upass'];
+        $contact = $rs['contact'];
+        $about = $rs['about'];
     } 
 }
+$deleteUser = @$_REQUEST['delete_user'];
+if (isset($deleteUser)) {
+    $delete_id = $_POST['delete_id'];
+
+    $rsd = $config->deleteUser($delete_id);
+    if($rsd){
+        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success !!</strong> User successfully deleted !!!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+    } else {
+        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Fail !!</strong> User data not found !!!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+    }
+}
+
+$user_list = $config->usersList();
 ?>
 
 <!DOCTYPE html>
@@ -36,16 +78,10 @@ if (isset($submit)) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
     <div class="container pt-5">
-        <?php if($res=='fail') { ?>
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Fail !!</strong> Record does not inserted !!!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php } ?>
         <form method="post" action="">
             <div class="mb-3">
                 <label for="uname" class="form-label">Name</label>
-                <input type="text" class="form-control" id="uname" name="uname">
+                <input type="text" class="form-control" id="uname" name="uname" val="<?php echo $uname ?>">
             </div>
             <div class="mb-3">
                 <label for="uemail" class="form-label">Email address</label>
@@ -67,6 +103,41 @@ if (isset($submit)) {
             </div>
             <button type="submit" class="btn btn-primary" name = "create_user" value="SUBMIT">Submit</button>
         </form>
+    </div>
+    <div class="container pt-2">
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Email</th>
+                <th scope="col">Name</th>
+                <th scope="col">Contact</th>
+                <th scope="col">About</th>
+                <th scope="col" colspan="2" style="text-align: center;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                    while($rec = mysqli_fetch_array($user_list)){                       
+                ?>
+                <tr>
+                    <th scope="row"><?php echo $rec['id']; ?></th>
+                    <td><?php echo $rec['email']; ?></td>
+                    <td><?php echo $rec['name']; ?></td>
+                    <td><?php echo $rec['contact']; ?></td>
+                    <td><?php echo $rec['about']; ?></td>   
+                    <form name="edit" method="post" action="">
+                        <td><input type="hidden" id="edit_id" name="edit_id" value="<?php echo $rec['id']; ?>"></td>
+                        <td><button type="submit" class="btn btn-primary" name = "update_user" value="Update">Update</button></td>
+                    </form>
+                    <form name="delete" method="post" action="">
+                        <td><input type="hidden" id="delete_id" name="delete_id" value="<?php echo $rec['id']; ?>"></td>
+                        <td><button type="submit" class="btn btn-primary" name = "delete_user" value="Delete">Delete</button></td>
+                    </form>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

@@ -35,8 +35,20 @@ class Config {
     }
 
     public function usersList(){
-        $query = "SELECT * FROM $this->table_name ORDER BY name";
+        $query = "SELECT * FROM $this->table_name ORDER BY id";
 
+        return mysqli_query($this->conn, $query);
+    }
+    
+    public function getSingleRecord($id){
+        $query = "SELECT * FROM $this->table_name WHERE id=$id";
+
+        return mysqli_query($this->conn, $query);
+    }
+
+    public function deleteUser($id){
+        $query = "DELETE FROM $this->table_name WHERE id=$id";
+        
         return mysqli_query($this->conn, $query);
     }
 
