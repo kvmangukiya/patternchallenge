@@ -124,7 +124,7 @@ $user_list = $config->usersList();
                 <label for="about" class="form-label">About</label>
                 <input type="text" class="form-control" id="about" name="about" value="<?php echo $aboutedit ?>">
             </div>
-            <?php if($edit_id>0) { ?>
+            <?php if($edit_id>0) {  ?>
                 <td><input type="hidden" id="sedit_id" name="sedit_id" value="<?php echo $edit_id; ?>"></td>
                 <button type="submit" class="btn btn-primary" name = "update_user" value="Update">Update</button>
             <?php } else { ?>

@@ -16,6 +16,7 @@ class Config {
     }
 
     private $table_name = "user";
+    private $col_id = "id";
     private $col_name = "name";
     private $col_email = "email";
     private $col_pass = "upass";
@@ -26,29 +27,29 @@ class Config {
     public function insertUser($name,$email,$upass,$contact,$about){
         $query = "INSERT INTO $this->table_name ($this->col_name,$this->col_email,$this->col_pass,$this->col_contact,$this->col_about) VALUES('$name','$email','$upass','$contact','$about')";
 
-        return mysqli_query($this->conn, $query);
+        return mysqli_query($this->conn, $query); 
     }
 
     public function updateUser($sEditID,$name,$email,$upass,$contact,$about){
-        $query = "UPDATE $this->table_name SET $this->col_name='$name',$this->col_email='$email',$this->col_pass='$upass',$this->col_contact='$contact',$this->col_about='$about' WHERE id=$sEditID";
+        $query = "UPDATE $this->table_name SET $this->col_name='$name',$this->col_email='$email',$this->col_pass='$upass',$this->col_contact='$contact',$this->col_about='$about' WHERE $this->col_id=$sEditID";
 
         return mysqli_query($this->conn, $query);
     }
 
     public function usersList(){
-        $query = "SELECT * FROM $this->table_name ORDER BY id";
+        $query = "SELECT * FROM $this->table_name ORDER BY $this->col_id";
 
         return mysqli_query($this->conn, $query);
     }
     
     public function getSingleRecord($id){
-        $query = "SELECT * FROM $this->table_name WHERE id=$id";
+        $query = "SELECT * FROM $this->table_name WHERE $this->col_id=$id";
 
         return mysqli_query($this->conn, $query);
     }
 
     public function deleteUser($id){
-        $query = "DELETE FROM $this->table_name WHERE id=$id";
+        $query = "DELETE FROM $this->table_name WHERE $this->col_id=$id";
         
         return mysqli_query($this->conn, $query);
     }
