@@ -5,11 +5,12 @@ $config = new Config();
 $config->dbConnect();
 
 $res = "";
-$uname = "";
-$email = "";
-$pass = "";
-$contact = "";
-$about = "";
+$unameedit = "";
+$uemailedit = "";
+$upassedit = "";
+$contactedit = "";
+$aboutedit = "";
+$edit_id = 0;
 
 $submit = @$_REQUEST['create_user'];
 if (isset($submit)) {
@@ -20,7 +21,7 @@ if (isset($submit)) {
     $about = $_POST['about'];
 
     $res = $config->insertUser($uname,$email,$pass,$contact,$about);
-    if($res!='success'){
+    if($res){
         echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
             <strong>Success !!</strong> User successfully created !!!
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -38,12 +39,34 @@ if (isset($editUser)) {
 
     $rse = $config->getSingleRecord($edit_id);
     if($rs=mysqli_fetch_assoc($rse)){
-        $uname = $rs['uname'];
-        $email = $rs['uemail'];
-        $pass = $rs['upass'];
-        $contact = $rs['contact'];
-        $about = $rs['about'];
+        $unameedit = $rs['name'];
+        $uemailedit = $rs['email'];
+        $upassedit = $rs['upass'];
+        $contactedit = $rs['contact'];
+        $aboutedit = $rs['about'];
     } 
+}
+$updateUser = @$_REQUEST['update_user'];
+if (isset($updateUser)) {
+    $sEditID = $_POST['sedit_id'];
+    $uname = $_POST['uname'];
+    $email = $_POST['uemail'];
+    $pass = $_POST['upass'];
+    $contact = $_POST['contact'];
+    $about = $_POST['about'];
+
+    $res = $config->updateUser($sEditID,$uname,$email,$pass,$contact,$about);
+    if($res){
+        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success !!</strong> User successfully updated !!!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+    } else {
+        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Fail !!</strong> Record does not updated !!!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+    }
 }
 $deleteUser = @$_REQUEST['delete_user'];
 if (isset($deleteUser)) {
@@ -81,27 +104,32 @@ $user_list = $config->usersList();
         <form method="post" action="">
             <div class="mb-3">
                 <label for="uname" class="form-label">Name</label>
-                <input type="text" class="form-control" id="uname" name="uname" val="<?php echo $uname ?>">
+                <input type="text" class="form-control" id="uname" name="uname" value='<?php echo $unameedit ?>'>
             </div>
             <div class="mb-3">
                 <label for="uemail" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="uemail" name="uemail" aria-describedby="emailHelp">
+                <input type="email" class="form-control" id="uemail" name="uemail" value="<?php echo $uemailedit ?>" aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
                 <label for="upass" class="form-label">Password</label>
-                <input type="password" class="form-control" id="upass" name="upass">
+                <input type="password" class="form-control" id="upass" name="upass" value="<?php echo $upassedit ?>">
             </div>
             <div class="mb-3">
                 <label for="contact" class="form-label">Contact</label>
-                <input type="text" class="form-control" id="contact" name="contact" aria-describedby="contactHelp">
+                <input type="text" class="form-control" id="contact" name="contact" value="<?php echo $contactedit ?>" aria-describedby="contactHelp">
                 <div id="contactHelp" class="form-text">We'll never share your contact with anyone else.</div>
             </div>
             <div class="mb-3">
                 <label for="about" class="form-label">About</label>
-                <input type="text" class="form-control" id="about" name="about">
+                <input type="text" class="form-control" id="about" name="about" value="<?php echo $aboutedit ?>">
             </div>
-            <button type="submit" class="btn btn-primary" name = "create_user" value="SUBMIT">Submit</button>
+            <?php if($edit_id>0) { ?>
+                <td><input type="hidden" id="sedit_id" name="sedit_id" value="<?php echo $edit_id; ?>"></td>
+                <button type="submit" class="btn btn-primary" name = "update_user" value="Update">Update</button>
+            <?php } else { ?>
+                <button type="submit" class="btn btn-primary" name = "create_user" value="Submit">Submit</button>
+            <?php } ?>
         </form>
     </div>
     <div class="container pt-2">
@@ -128,7 +156,7 @@ $user_list = $config->usersList();
                     <td><?php echo $rec['about']; ?></td>   
                     <form name="edit" method="post" action="">
                         <td><input type="hidden" id="edit_id" name="edit_id" value="<?php echo $rec['id']; ?>"></td>
-                        <td><button type="submit" class="btn btn-primary" name = "update_user" value="Update">Update</button></td>
+                        <td><button type="submit" class="btn btn-primary" name = "edit_user" value="Edit">Edit</button></td>
                     </form>
                     <form name="delete" method="post" action="">
                         <td><input type="hidden" id="delete_id" name="delete_id" value="<?php echo $rec['id']; ?>"></td>

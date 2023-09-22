@@ -26,12 +26,13 @@ class Config {
     public function insertUser($name,$email,$upass,$contact,$about){
         $query = "INSERT INTO $this->table_name ($this->col_name,$this->col_email,$this->col_pass,$this->col_contact,$this->col_about) VALUES('$name','$email','$upass','$contact','$about')";
 
-        $res = mysqli_query($this->conn, $query);
-        if($res){
-            return "success";
-        } else {
-            return "fail";
-        }
+        return mysqli_query($this->conn, $query);
+    }
+
+    public function updateUser($sEditID,$name,$email,$upass,$contact,$about){
+        $query = "UPDATE $this->table_name SET $this->col_name='$name',$this->col_email='$email',$this->col_pass='$upass',$this->col_contact='$contact',$this->col_about='$about' WHERE id=$sEditID";
+
+        return mysqli_query($this->conn, $query);
     }
 
     public function usersList(){
