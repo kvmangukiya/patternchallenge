@@ -86,7 +86,7 @@ if (isset($deleteUser)) {
     }
 }
 
-$user_list = $config->usersList();
+$rec_list = $config->usersList();
 ?>
 
 <!DOCTYPE html>
@@ -146,7 +146,7 @@ $user_list = $config->usersList();
             </thead>
             <tbody>
                 <?php 
-                    while($rec = mysqli_fetch_array($user_list)){                       
+                    while($rec = mysqli_fetch_array($rec_list)){                       
                 ?>
                 <tr>
                     <th scope="row"><?php echo $rec['id']; ?></th>
