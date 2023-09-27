@@ -6,7 +6,7 @@ class Config {
     private $dbname = "chatapp";
     private $conn;
 
-    public function dbConnect(){
+    public function __construct(){
         $this->conn = mysqli_connect($this->host,$this->username,$this->password,$this->dbname);
         if($this->conn){
             // echo "Database connected !!!";

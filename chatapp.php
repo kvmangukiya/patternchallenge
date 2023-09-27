@@ -2,7 +2,6 @@
 include("config/config.php");
 
 $config = new Config();
-$config->dbConnect();
 
 $res = "";
 $unameedit = "";
