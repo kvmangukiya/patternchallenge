@@ -22,8 +22,10 @@
         } else {
             $res = ["msg" => "Record insertion failled !!"];
         }
+        http_response_code(201);
     } else {
         $res = ["msg" => "Only POST method is allowed !!"];
+        http_response_code(403);
     }
 
     echo json_encode($res);

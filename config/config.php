@@ -36,8 +36,8 @@ class Config {
         return mysqli_query($this->conn, $query);
     }
 
-    public function usersList(){
-        $query = "SELECT * FROM $this->table_name ORDER BY $this->col_id";
+    public function usersList($li){
+        $query = "SELECT * FROM $this->table_name ORDER BY $this->col_id LIMIT $li";
 
         return mysqli_query($this->conn, $query);
     }
