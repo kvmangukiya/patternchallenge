@@ -31,9 +31,18 @@ class Config {
     }
 
     public function updateUser($sEditID,$name,$email,$upass,$contact,$about){
-        $query = "UPDATE $this->table_name SET $this->col_name='$name',$this->col_email='$email',$this->col_pass='$upass',$this->col_contact='$contact',$this->col_about='$about' WHERE $this->col_id=$sEditID";
+        $rs = $this->getSingleRecord($sEditID);
+        if(mysqli_num_rows($rs)>0){
+            $query = "UPDATE $this->table_name SET $this->col_name='$name',$this->col_email='$email',$this->col_pass='$upass',$this->col_contact='$contact',$this->col_about='$about' WHERE $this->col_id=$sEditID";
 
-        return mysqli_query($this->conn, $query);
+            if( mysqli_query($this->conn, $query)){
+                return "Record '$sEditID' updated successfully...";
+            } else {
+                return "Record '$sEditID' not updated. Please try again later...";
+            }
+        } else {
+            return "Record '$sEditID' not found...";
+        }
     }
 
     public function usersList($li){

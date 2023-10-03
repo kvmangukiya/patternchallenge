@@ -85,7 +85,7 @@ if (isset($deleteUser)) {
     }
 }
 
-$rec_list = $config->usersList();
+$rec_list = $config->usersList(100);
 ?>
 
 <!DOCTYPE html>
