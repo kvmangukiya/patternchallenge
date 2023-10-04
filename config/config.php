@@ -30,6 +30,22 @@ class Config {
         return mysqli_query($this->conn, $query); 
     }
 
+    public function verifyUser($email,$pass){
+        $query = "SELECT * FROM $this->table_name WHERE $this->col_email='$email'";
+
+        $res = mysqli_query($this->conn, $query); 
+        if($rec = mysqli_fetch_assoc($res)){
+            if(password_verify($pass,$rec[$this->col_pass])){
+                return 1;
+            } else {
+                return 2;
+            }    
+        } else {
+            return 0;
+        }
+    }
+
+
     public function updateUser($sEditID,$name,$email,$upass,$contact,$about){
         $rs = $this->getSingleRecord($sEditID);
         if(mysqli_num_rows($rs)>0){

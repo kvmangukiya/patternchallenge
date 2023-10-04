@@ -9,20 +9,21 @@
     $res = array();
 
     if($_SERVER['REQUEST_METHOD'] == "POST"){
-        $name = $_POST['name'];
         $email = $_POST['email'];
-        $pass = password_hash($_POST['pass'],PASSWORD_DEFAULT);
-        $contact = $_POST['contact'];
-        $about = $_POST['about'];
+        $pass = $_POST['pass'];
         
-        $result = $config->insertUser($name,$email,$pass,$contact,$about);
+        $result = $config->verifyUser($email,$pass);
 
-        if($result){
-            $res = ["msg" => "Record inserted successfully !!"];
+        if($result==1){
+            $res = ["msg" => "User verified successfully !!"];
         } else {
-            $res = ["msg" => "Record insertion failled !!"];
+            if($result==2){
+                $res = ["msg" => "Wrong password !!"];
+            } else {
+            $res = ["msg" => "User does not exist !!"];
+            }
         }
-        http_response_code(201);
+        http_response_code(200);
     } else {
         $res = ["msg" => "Only POST method is allowed !!"];
         http_response_code(403);
