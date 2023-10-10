@@ -22,6 +22,7 @@ class Config {
     private $col_pass = "upass";
     private $col_about = "about";
     private $col_contact = "contact";
+    private $col_photoPath = "photoPath";
 
 
     public function insertUser($name,$email,$upass,$contact,$about){
@@ -45,7 +46,6 @@ class Config {
         }
     }
 
-
     public function updateUser($sEditID,$name,$email,$upass,$contact,$about){
         $rs = $this->getSingleRecord($sEditID);
         if(mysqli_num_rows($rs)>0){
@@ -55,6 +55,26 @@ class Config {
                 return "Record '$sEditID' updated successfully...";
             } else {
                 return "Record '$sEditID' not updated. Please try again later...";
+            }
+        } else {
+            return "Record '$sEditID' not found...";
+        }
+    }
+
+    public function updatePhoto($sEditID,$photoPath){
+        $rs = $this->getSingleRecord($sEditID);
+        if(mysqli_num_rows($rs)>0){
+            $rec = mysqli_fetch_assoc($rs);
+            if($rec['photoPath']!=""){
+                unlink("../".$rec['photoPath']);
+            }
+
+            $query = "UPDATE $this->table_name SET $this->col_photoPath='$photoPath' WHERE $this->col_id=$sEditID";
+
+            if( mysqli_query($this->conn, $query)){
+                return "Photo of '$sEditID' updated successfully...";
+            } else {
+                return "Photo of '$sEditID' not updated. Please try again later...";
             }
         } else {
             return "Record '$sEditID' not found...";

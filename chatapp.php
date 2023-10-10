@@ -93,6 +93,11 @@ $rec_list = $config->usersList(100);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        img {
+            border-radius: 50%;
+        }
+    </style>
     <title>Chat App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
@@ -136,6 +141,7 @@ $rec_list = $config->usersList(100);
             <thead>
                 <tr>
                 <th scope="col">Id</th>
+                <th scope="col">Photo</th>
                 <th scope="col">Email</th>
                 <th scope="col">Name</th>
                 <th scope="col">Contact</th>
@@ -149,6 +155,7 @@ $rec_list = $config->usersList(100);
                 ?>
                 <tr>
                     <th scope="row"><?php echo $rec['id']; ?></th>
+                    <td><img src="<?php echo $rec['photoPath']; ?>" style="height:50px"></td>
                     <td><?php echo $rec['email']; ?></td>
                     <td><?php echo $rec['name']; ?></td>
                     <td><?php echo $rec['contact']; ?></td>
