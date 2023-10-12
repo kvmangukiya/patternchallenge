@@ -15,7 +15,7 @@
         $contact = $_POST['contact'];
         $about = $_POST['about'];
         
-        $result = $config->insertUser($name,$email,$pass,$contact,$about);
+        $result = $config->insertUser($name,$email,$pass,$contact,$about,"");
 
         if($result){
             $res = ["msg" => "Record inserted successfully !!"];

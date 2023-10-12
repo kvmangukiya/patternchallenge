@@ -13,9 +13,15 @@
         $data = file_get_contents('php://input');
         parse_str($data,$param);
         $id = $param['id'];
-        $rec = mysqli_num_rows($config->getSingleRecord($id));
-        if($rec>0){            
+        $rec = $config->getSingleRecord($id);
+        if(mysqli_num_rows($rec)>0){            
+            $userData = mysqli_fetch_assoc($rec);
+            $userPhotoPath = $userData['photoPath'];
+
             if($config->deleteUser($id)){
+                if($userPhotoPath!=""){
+                    unlink($userPhotoPath);
+                }
                 $res['msg'] = "'$id' user deleted successfully.";
                 http_response_code(200);
             } else {

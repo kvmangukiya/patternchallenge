@@ -19,9 +19,8 @@
         $photoTmpPath = $data['photo']['tmp_name'];
 
         $photoPath = "user_profile_photos/".$id."-".uniqid().$photoName;
-        move_uploaded_file($photoTmpPath,"../".$photoPath);
-        
-        $res['msg'] = $config->updatePhoto($id,$photoPath);
+                
+        $res['msg'] = $config->updatePhoto($id,$photoTmpPath,$photoPath);
         http_response_code(201);  
     } else {
         $res = ["msg" => "Only POST method is allowed !!"];

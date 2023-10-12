@@ -9,6 +9,7 @@ $uemailedit = "";
 $upassedit = "";
 $contactedit = "";
 $aboutedit = "";
+$photoedit = "user_profile_photos/default.jpg";
 $edit_id = 0;
 
 $submit = @$_REQUEST['create_user'];
@@ -18,8 +19,9 @@ if (isset($submit)) {
     $pass = $_POST['upass'];
     $contact = $_POST['contact'];
     $about = $_POST['about'];
+    $photoPath = $_POST['fileToUpload'];
 
-    $res = $config->insertUser($uname,$email,$pass,$contact,$about);
+    $res = $config->insertUser($uname,$email,$pass,$contact,$about,$photoPath);
     if($res){
         echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
             <strong>Success !!</strong> User successfully created !!!
@@ -43,6 +45,7 @@ if (isset($editUser)) {
         $upassedit = $rs['upass'];
         $contactedit = $rs['contact'];
         $aboutedit = $rs['about'];
+        $photoedit = $rs['photoPath'];
     } 
 }
 $updateUser = @$_REQUEST['update_user'];
@@ -53,6 +56,7 @@ if (isset($updateUser)) {
     $pass = $_POST['upass'];
     $contact = $_POST['contact'];
     $about = $_POST['about'];
+    $photoPath = $_POST['fileToUpload'];
 
     $res = $config->updateUser($sEditID,$uname,$email,$pass,$contact,$about);
     if($res){
@@ -71,12 +75,26 @@ $deleteUser = @$_REQUEST['delete_user'];
 if (isset($deleteUser)) {
     $delete_id = $_POST['delete_id'];
 
-    $rsd = $config->deleteUser($delete_id);
-    if($rsd){
-        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Success !!</strong> User successfully deleted !!!
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>';
+    $rec = $config->getSingleRecord($delete_id);
+    if(mysqli_num_rows($rec)>0){            
+        $userData = mysqli_fetch_assoc($rec);
+        $userPhotoPath = $userData['photoPath'];
+
+        $rsd = $config->deleteUser($delete_id);
+        if($rsd){
+            if($userPhotoPath!=""){
+                unlink($userPhotoPath);
+            }
+            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success !!</strong> User successfully deleted !!!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>';
+        } else {
+            echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Fail !!</strong> Please try after some time !!!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>';
+        }
     } else {
         echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
             <strong>Fail !!</strong> User data not found !!!
@@ -127,6 +145,11 @@ $rec_list = $config->usersList(100);
             <div class="mb-3">
                 <label for="about" class="form-label">About</label>
                 <input type="text" class="form-control" id="about" name="about" value="<?php echo $aboutedit ?>">
+            </div>
+            <div class="mb-3">
+                <label for="photo" class="form-label">Photo</label>
+                <img src="<?php echo $photoedit == "" ? "user_profile_photos/default.jpg": $photoedit; ?>" class="form-control" style="width:100px">
+                <input type="file" class="form-control" name="fileToUpload" id="fileToUpload">
             </div>
             <?php if($edit_id>0) {  ?>
                 <td><input type="hidden" id="sedit_id" name="sedit_id" value="<?php echo $edit_id; ?>"></td>

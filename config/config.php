@@ -25,9 +25,9 @@ class Config {
     private $col_photoPath = "photoPath";
 
 
-    public function insertUser($name,$email,$upass,$contact,$about){
-        $query = "INSERT INTO $this->table_name ($this->col_name,$this->col_email,$this->col_pass,$this->col_contact,$this->col_about) VALUES('$name','$email','$upass','$contact','$about')";
-
+    public function insertUser($name,$email,$upass,$contact,$about,$photoPath){
+        $query = "INSERT INTO $this->table_name ($this->col_name,$this->col_email,$this->col_pass,$this->col_contact,$this->col_about,$this->col_photoPath) VALUES('$name','$email','$upass','$contact','$about','$photoPath')";
+        
         return mysqli_query($this->conn, $query); 
     }
 
@@ -61,13 +61,14 @@ class Config {
         }
     }
 
-    public function updatePhoto($sEditID,$photoPath){
+    public function updatePhoto($sEditID,$photoTmpPath,$photoPath){
         $rs = $this->getSingleRecord($sEditID);
         if(mysqli_num_rows($rs)>0){
             $rec = mysqli_fetch_assoc($rs);
             if($rec['photoPath']!=""){
                 unlink("../".$rec['photoPath']);
             }
+            move_uploaded_file($photoTmpPath,"../".$photoPath);
 
             $query = "UPDATE $this->table_name SET $this->col_photoPath='$photoPath' WHERE $this->col_id=$sEditID";
 
@@ -77,7 +78,7 @@ class Config {
                 return "Photo of '$sEditID' not updated. Please try again later...";
             }
         } else {
-            return "Record '$sEditID' not found...";
+            return "Id '$sEditID' not found...";
         }
     }
 
