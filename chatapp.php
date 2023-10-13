@@ -19,7 +19,19 @@ if (isset($submit)) {
     $pass = $_POST['upass'];
     $contact = $_POST['contact'];
     $about = $_POST['about'];
-    $photoPath = $_POST['fileToUpload'];
+    //take photo as file
+    $fileData = $_FILES;
+    //var_dump($fileData['fileToUpload']['error']);
+    if($fileData['fileToUpload']['size'] > 0){
+        $photoName = $fileData['fileToUpload']['name'];
+        $photoTmpPath = $fileData['fileToUpload']['tmp_name'];
+        $photoPath = "user_profile_photos/".uniqid("User-").$photoName;
+        move_uploaded_file($photoTmpPath,$photoPath);
+    } else {
+        $photoName = "";
+        $photoTmpPath = "";
+        $photoPath = "";
+    }
 
     $res = $config->insertUser($uname,$email,$pass,$contact,$about,$photoPath);
     if($res){
@@ -56,9 +68,22 @@ if (isset($updateUser)) {
     $pass = $_POST['upass'];
     $contact = $_POST['contact'];
     $about = $_POST['about'];
-    $photoPath = $_POST['fileToUpload'];
 
-    $res = $config->updateUser($sEditID,$uname,$email,$pass,$contact,$about);
+    $fileData = $_FILES;
+    if($fileData['fileToUpload']['size'] > 0){
+        $photoName = $fileData['fileToUpload']['name'];
+        $photoTmpPath = $fileData['fileToUpload']['tmp_name'];
+        $photoPath = "user_profile_photos/".uniqid("User-").$photoName;
+        move_uploaded_file($photoTmpPath,$photoPath);
+        $photoUpdateFlag = true;
+    } else {
+        $photoName = "";
+        $photoTmpPath = "";
+        $photoPath = "";
+        $photoUpdateFlag = false;
+    }
+
+    $res = $config->updateUser($sEditID,$uname,$email,$pass,$contact,$about,$photoPath,$photoUpdateFlag);
     if($res){
         echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
             <strong>Success !!</strong> User successfully updated !!!
@@ -79,7 +104,7 @@ if (isset($deleteUser)) {
     if(mysqli_num_rows($rec)>0){            
         $userData = mysqli_fetch_assoc($rec);
         $userPhotoPath = $userData['photoPath'];
-
+        
         $rsd = $config->deleteUser($delete_id);
         if($rsd){
             if($userPhotoPath!=""){
@@ -123,7 +148,7 @@ $rec_list = $config->usersList(100);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
     <div class="container pt-5">
-        <form method="post" action="">
+        <form method="post" action="" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="uname" class="form-label">Name</label>
                 <input type="text" class="form-control" id="uname" name="uname" value='<?php echo $unameedit ?>'>
@@ -148,7 +173,9 @@ $rec_list = $config->usersList(100);
             </div>
             <div class="mb-3">
                 <label for="photo" class="form-label">Photo</label>
-                <img src="<?php echo $photoedit == "" ? "user_profile_photos/default.jpg": $photoedit; ?>" class="form-control" style="width:100px">
+                <?php if($edit_id>0) {  ?>
+                    <img src="<?php echo $photoedit == "" ? "user_profile_photos/default.jpg": $photoedit; ?>" class="form-control" style="width:100px">
+                <?php } ?>
                 <input type="file" class="form-control" name="fileToUpload" id="fileToUpload">
             </div>
             <?php if($edit_id>0) {  ?>
@@ -178,7 +205,7 @@ $rec_list = $config->usersList(100);
                 ?>
                 <tr>
                     <th scope="row"><?php echo $rec['id']; ?></th>
-                    <td><img src="<?php echo $rec['photoPath']; ?>" style="height:50px"></td>
+                    <td><?php if($rec['photoPath']!="") { ?><img src="<?php echo $rec['photoPath']; ?>" style="height:50px"><?php } ?></td>
                     <td><?php echo $rec['email']; ?></td>
                     <td><?php echo $rec['name']; ?></td>
                     <td><?php echo $rec['contact']; ?></td>

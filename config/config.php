@@ -46,12 +46,19 @@ class Config {
         }
     }
 
-    public function updateUser($sEditID,$name,$email,$upass,$contact,$about){
+    public function updateUser($sEditID,$name,$email,$upass,$contact,$about,$photoPath,$photoUpdateFlag=false){
         $rs = $this->getSingleRecord($sEditID);
-        if(mysqli_num_rows($rs)>0){
-            $query = "UPDATE $this->table_name SET $this->col_name='$name',$this->col_email='$email',$this->col_pass='$upass',$this->col_contact='$contact',$this->col_about='$about' WHERE $this->col_id=$sEditID";
-
-            if( mysqli_query($this->conn, $query)){
+        if(mysqli_num_rows($rs)>0) {
+            if($photoUpdateFlag) {
+                $rec = mysqli_fetch_assoc($rs);
+                if($rec['photoPath']!="") {
+                    unlink($rec['photoPath']);
+                }
+                $query = "UPDATE $this->table_name SET $this->col_name='$name',$this->col_email='$email',$this->col_pass='$upass',$this->col_contact='$contact',$this->col_about='$about',$this->col_photoPath='$photoPath' WHERE $this->col_id=$sEditID";
+            } else {
+                $query = "UPDATE $this->table_name SET $this->col_name='$name',$this->col_email='$email',$this->col_pass='$upass',$this->col_contact='$contact',$this->col_about='$about' WHERE $this->col_id=$sEditID";
+            }
+            if( mysqli_query($this->conn, $query)) {
                 return "Record '$sEditID' updated successfully...";
             } else {
                 return "Record '$sEditID' not updated. Please try again later...";

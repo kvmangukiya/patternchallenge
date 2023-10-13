@@ -23,7 +23,7 @@
         $contact = $record['contact'];
         $about = $record['about'];
         
-        $res['msg'] = $config->updateUser($id,$name,$email,$pass,$contact,$about);
+        $res['msg'] = $config->updateUser($id,$name,$email,$pass,$contact,$about,"",false);
         
         http_response_code(200);
     } else {
